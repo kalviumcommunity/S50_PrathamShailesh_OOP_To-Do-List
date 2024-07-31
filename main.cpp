@@ -7,7 +7,7 @@ using namespace std;
 
 class Task {
 public:
-    Task(const string& description) : description(description), completed(false) {}
+    Task(const string& description = "") : description(description), completed(false) {}
 
     string getDescription() const {
         return this->description; 
@@ -25,7 +25,6 @@ private:
     string description;
     bool completed;
 };
-
 
 class ToDoList {
 public:
@@ -106,13 +105,21 @@ private:
     vector<Task> tasks;
 };
 
-
 int main() {
     ToDoList toDoList;
     int choice;
     string input;
     cout << "----------------------------------------------------------------------\n";
     cout << "Welcome to your To-Do List Manager!\n";
+
+    Task taskArray[3] = { Task("Task 1"), Task("Task 2"), Task("Task 3") };
+
+    cout << "----------------------------------------------------------------------\n";
+    cout << "Initial tasks from the array:\n";
+    for (int i = 0; i < 3; ++i) {
+        cout << i + 1 << ". " << taskArray[i].getDescription() << "\n";
+        cout << "Status: " << (taskArray[i].isCompleted() ? "Completed" : "Incomplete") << '\n';
+    }
 
     do {
         toDoList.showMenu();
