@@ -10,15 +10,15 @@ public:
     Task(const string& description = "") : description(description), completed(false) {}
 
     string getDescription() const {
-        return this->description; // Using this pointer
+        return this->description; 
     }
 
     bool isCompleted() const {
-        return this->completed; // Using this pointer
+        return this->completed; 
     }
 
     void markAsComplete() {
-        this->completed = true; // Using this pointer
+        this->completed = true; 
     }
 
 private:
@@ -43,14 +43,14 @@ public:
         string taskDescription;
         cin.ignore();
         getline(cin, taskDescription);
-        this->tasks.emplace_back(taskDescription); // Using this pointer
+        this->tasks.emplace_back(taskDescription); 
         cout << "----------------------------------------------------------------------\n";
         cout << "Task added successfully.\n";
     }
 
     void deleteTask() {
         cout << "----------------------------------------------------------------------\n";
-        if (this->tasks.empty()) { // Using this pointer
+        if (this->tasks.empty()) { 
             cout << "No tasks available to delete.\n";
             return;
         }
@@ -59,43 +59,43 @@ public:
         int taskNumber;
         cin >> taskNumber;
 
-        if (taskNumber < 1 || taskNumber > this->tasks.size()) { // Using this pointer
+        if (taskNumber < 1 || taskNumber > this->tasks.size()) { 
             cout << "Invalid task number.\n";
         } else {
-            this->tasks.erase(this->tasks.begin() + taskNumber - 1); // Using this pointer
+            this->tasks.erase(this->tasks.begin() + taskNumber - 1); 
             cout << "Task deleted successfully.\n";
         }
     }
 
     void viewTasks() const {
         cout << "----------------------------------------------------------------------\n";
-        if (this->tasks.empty()) { // Using this pointer
+        if (this->tasks.empty()) { 
             cout << "No tasks available.\n";
             return;
         }
         cout << "Tasks:\n";
-        for (size_t i = 0; i < this->tasks.size(); ++i) { // Using this pointer
-            cout << i + 1 << ". " << this->tasks[i].getDescription() << "\n"; // Using this pointer
-            cout << "Status: " << (this->tasks[i].isCompleted() ? "Completed" : "Incomplete") << '\n'; // Using this pointer
+        for (size_t i = 0; i < this->tasks.size(); ++i) { 
+            cout << i + 1 << ". " << this->tasks[i].getDescription() << "\n"; 
+            cout << "Status: " << (this->tasks[i].isCompleted() ? "Completed" : "Incomplete") << '\n'; 
         }
     }
 
     void markTaskAsComplete() {
         cout << "----------------------------------------------------------------------\n";
-        if (this->tasks.empty()) { // Using this pointer
+        if (this->tasks.empty()) { 
             cout << "No tasks available to mark as complete.\n";
             return;
         }
 
-        this->viewTasks(); // Using this pointer
+        this->viewTasks(); 
         cout << "Enter the task number to mark as complete: ";
         int taskNumber;
         cin >> taskNumber;
 
-        if (taskNumber < 1 || taskNumber > this->tasks.size()) { // Using this pointer
+        if (taskNumber < 1 || taskNumber > this->tasks.size()) { 
             cout << "Invalid task number.\n";
         } else {
-            this->tasks[taskNumber - 1].markAsComplete(); // Using this pointer
+            this->tasks[taskNumber - 1].markAsComplete(); 
             cout << "----------------------------------------------------------------------\n";
             cout << "Task marked as complete successfully.\n";
         }
