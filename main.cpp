@@ -10,21 +10,22 @@ public:
     Task(const string& description) : description(description), completed(false) {}
 
     string getDescription() const {
-        return description;
+        return this->description; 
     }
 
     bool isCompleted() const {
-        return completed;
+        return this->completed; 
     }
 
     void markAsComplete() {
-        completed = true;
+        this->completed = true; 
     }
 
 private:
     string description;
     bool completed;
 };
+
 
 class ToDoList {
 public:
@@ -43,14 +44,14 @@ public:
         string taskDescription;
         cin.ignore();
         getline(cin, taskDescription);
-        tasks.emplace_back(taskDescription);
+        this->tasks.emplace_back(taskDescription); 
         cout << "----------------------------------------------------------------------\n";
         cout << "Task added successfully.\n";
     }
 
     void deleteTask() {
         cout << "----------------------------------------------------------------------\n";
-        if (tasks.empty()) {
+        if (this->tasks.empty()) { 
             cout << "No tasks available to delete.\n";
             return;
         }
@@ -59,43 +60,43 @@ public:
         int taskNumber;
         cin >> taskNumber;
 
-        if (taskNumber < 1 || taskNumber > tasks.size()) {
+        if (taskNumber < 1 || taskNumber > this->tasks.size()) { 
             cout << "Invalid task number.\n";
         } else {
-            tasks.erase(tasks.begin() + taskNumber - 1);
+            this->tasks.erase(this->tasks.begin() + taskNumber - 1); 
             cout << "Task deleted successfully.\n";
         }
     }
 
     void viewTasks() const {
         cout << "----------------------------------------------------------------------\n";
-        if (tasks.empty()) {
+        if (this->tasks.empty()) { 
             cout << "No tasks available.\n";
             return;
         }
         cout << "Tasks:\n";
-        for (size_t i = 0; i < tasks.size(); ++i) {
-            cout << i + 1 << ". " << tasks[i].getDescription() << "\n";
-            cout << "Status: " << (tasks[i].isCompleted() ? "Completed" : "Incomplete") << '\n';
+        for (size_t i = 0; i < this->tasks.size(); ++i) { 
+            cout << i + 1 << ". " << this->tasks[i].getDescription() << "\n"; 
+            cout << "Status: " << (this->tasks[i].isCompleted() ? "Completed" : "Incomplete") << '\n'; 
         }
     }
 
     void markTaskAsComplete() {
         cout << "----------------------------------------------------------------------\n";
-        if (tasks.empty()) {
+        if (this->tasks.empty()) { 
             cout << "No tasks available to mark as complete.\n";
             return;
         }
 
-        viewTasks();
+        this->viewTasks(); 
         cout << "Enter the task number to mark as complete: ";
         int taskNumber;
         cin >> taskNumber;
 
-        if (taskNumber < 1 || taskNumber > tasks.size()) {
+        if (taskNumber < 1 || taskNumber > this->tasks.size()) { 
             cout << "Invalid task number.\n";
         } else {
-            tasks[taskNumber - 1].markAsComplete();
+            this->tasks[taskNumber - 1].markAsComplete(); 
             cout << "----------------------------------------------------------------------\n";
             cout << "Task marked as complete successfully.\n";
         }
@@ -104,6 +105,7 @@ public:
 private:
     vector<Task> tasks;
 };
+
 
 int main() {
     ToDoList toDoList;
