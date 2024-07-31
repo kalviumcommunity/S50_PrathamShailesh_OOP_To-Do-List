@@ -7,25 +7,24 @@ using namespace std;
 
 class Task {
 public:
-    Task(const string& description) : description(description), completed(false) {}
+    Task(const string& description = "") : description(description), completed(false) {}
 
     string getDescription() const {
-        return this->description; 
+        return this->description; // Using this pointer
     }
 
     bool isCompleted() const {
-        return this->completed; 
+        return this->completed; // Using this pointer
     }
 
     void markAsComplete() {
-        this->completed = true; 
+        this->completed = true; // Using this pointer
     }
 
 private:
     string description;
     bool completed;
 };
-
 
 class ToDoList {
 public:
@@ -44,14 +43,14 @@ public:
         string taskDescription;
         cin.ignore();
         getline(cin, taskDescription);
-        this->tasks.emplace_back(taskDescription); 
+        this->tasks.emplace_back(taskDescription); // Using this pointer
         cout << "----------------------------------------------------------------------\n";
         cout << "Task added successfully.\n";
     }
 
     void deleteTask() {
         cout << "----------------------------------------------------------------------\n";
-        if (this->tasks.empty()) { 
+        if (this->tasks.empty()) { // Using this pointer
             cout << "No tasks available to delete.\n";
             return;
         }
@@ -60,43 +59,43 @@ public:
         int taskNumber;
         cin >> taskNumber;
 
-        if (taskNumber < 1 || taskNumber > this->tasks.size()) { 
+        if (taskNumber < 1 || taskNumber > this->tasks.size()) { // Using this pointer
             cout << "Invalid task number.\n";
         } else {
-            this->tasks.erase(this->tasks.begin() + taskNumber - 1); 
+            this->tasks.erase(this->tasks.begin() + taskNumber - 1); // Using this pointer
             cout << "Task deleted successfully.\n";
         }
     }
 
     void viewTasks() const {
         cout << "----------------------------------------------------------------------\n";
-        if (this->tasks.empty()) { 
+        if (this->tasks.empty()) { // Using this pointer
             cout << "No tasks available.\n";
             return;
         }
         cout << "Tasks:\n";
-        for (size_t i = 0; i < this->tasks.size(); ++i) { 
-            cout << i + 1 << ". " << this->tasks[i].getDescription() << "\n"; 
-            cout << "Status: " << (this->tasks[i].isCompleted() ? "Completed" : "Incomplete") << '\n'; 
+        for (size_t i = 0; i < this->tasks.size(); ++i) { // Using this pointer
+            cout << i + 1 << ". " << this->tasks[i].getDescription() << "\n"; // Using this pointer
+            cout << "Status: " << (this->tasks[i].isCompleted() ? "Completed" : "Incomplete") << '\n'; // Using this pointer
         }
     }
 
     void markTaskAsComplete() {
         cout << "----------------------------------------------------------------------\n";
-        if (this->tasks.empty()) { 
+        if (this->tasks.empty()) { // Using this pointer
             cout << "No tasks available to mark as complete.\n";
             return;
         }
 
-        this->viewTasks(); 
+        this->viewTasks(); // Using this pointer
         cout << "Enter the task number to mark as complete: ";
         int taskNumber;
         cin >> taskNumber;
 
-        if (taskNumber < 1 || taskNumber > this->tasks.size()) { 
+        if (taskNumber < 1 || taskNumber > this->tasks.size()) { // Using this pointer
             cout << "Invalid task number.\n";
         } else {
-            this->tasks[taskNumber - 1].markAsComplete(); 
+            this->tasks[taskNumber - 1].markAsComplete(); // Using this pointer
             cout << "----------------------------------------------------------------------\n";
             cout << "Task marked as complete successfully.\n";
         }
@@ -106,13 +105,21 @@ private:
     vector<Task> tasks;
 };
 
-
 int main() {
     ToDoList toDoList;
     int choice;
     string input;
     cout << "----------------------------------------------------------------------\n";
     cout << "Welcome to your To-Do List Manager!\n";
+
+    Task taskArray[3] = { Task("Task 1"), Task("Task 2"), Task("Task 3") };
+
+    cout << "----------------------------------------------------------------------\n";
+    cout << "Initial tasks from the array:\n";
+    for (int i = 0; i < 3; ++i) {
+        cout << i + 1 << ". " << taskArray[i].getDescription() << "\n";
+        cout << "Status: " << (taskArray[i].isCompleted() ? "Completed" : "Incomplete") << '\n';
+    }
 
     do {
         toDoList.showMenu();
