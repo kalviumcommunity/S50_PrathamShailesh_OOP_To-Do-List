@@ -7,7 +7,9 @@ using namespace std;
 
 class Task {
 public:
-    Task(const string& description = "") : description(description), completed(false) {}
+    Task(const string& description = "") : description(description), completed(false) {
+        taskCount++;
+    }
 
     string getDescription() const {
         return this->description; 
@@ -21,10 +23,24 @@ public:
         this->completed = true; 
     }
 
+    static int getTaskCount() {
+        return taskCount;
+    }
+
+    static void decrementTaskCount() {
+        if (taskCount > 0) {
+            --taskCount;
+        }
+    }
+
 private:
     string description;
     bool completed;
+    static int taskCount;
 };
+
+int Task::taskCount = 0;
+
 
 class ToDoList {
 public:
@@ -47,7 +63,7 @@ public:
         Task* newTask = new Task(taskDescription); 
         this->tasks.push_back(newTask);
         cout << "----------------------------------------------------------------------\n";
-        cout << "Task added successfully.\n";
+        cout << "Task added successfully. Total tasks: " << Task::getTaskCount() << "\n";
     }
 
     void deleteTask() {
@@ -66,7 +82,9 @@ public:
         } else {
             delete this->tasks[taskNumber - 1];
             this->tasks.erase(this->tasks.begin() + taskNumber - 1); 
+            Task::decrementTaskCount();
             cout << "Task deleted successfully.\n";
+            cout << "Total tasks remaining: " << Task::getTaskCount() << "\n";
         }
     }
 
