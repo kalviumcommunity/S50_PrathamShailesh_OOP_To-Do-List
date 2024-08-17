@@ -28,6 +28,7 @@ private:
 
 class ToDoList {
 public:
+
     void showMenu() const {
         cout << "----------------------------------------------------------------------\n";
         cout << "Please choose an option:\n";
@@ -43,7 +44,8 @@ public:
         string taskDescription;
         cin.ignore();
         getline(cin, taskDescription);
-        this->tasks.emplace_back(taskDescription); 
+        Task* newTask = new Task(taskDescription); 
+        this->tasks.push_back(newTask);
         cout << "----------------------------------------------------------------------\n";
         cout << "Task added successfully.\n";
     }
@@ -62,6 +64,7 @@ public:
         if (taskNumber < 1 || taskNumber > this->tasks.size()) { 
             cout << "Invalid task number.\n";
         } else {
+            delete this->tasks[taskNumber - 1];
             this->tasks.erase(this->tasks.begin() + taskNumber - 1); 
             cout << "Task deleted successfully.\n";
         }
@@ -75,8 +78,8 @@ public:
         }
         cout << "Tasks:\n";
         for (size_t i = 0; i < this->tasks.size(); ++i) { 
-            cout << i + 1 << ". " << this->tasks[i].getDescription() << "\n"; 
-            cout << "Status: " << (this->tasks[i].isCompleted() ? "Completed" : "Incomplete") << '\n'; 
+            cout << i + 1 << ". " << this->tasks[i]->getDescription() << "\n"; 
+            cout << "Status: " << (this->tasks[i]->isCompleted() ? "Completed" : "Incomplete") << '\n'; 
         }
     }
 
@@ -95,14 +98,20 @@ public:
         if (taskNumber < 1 || taskNumber > this->tasks.size()) { 
             cout << "Invalid task number.\n";
         } else {
-            this->tasks[taskNumber - 1].markAsComplete(); 
+            this->tasks[taskNumber - 1]->markAsComplete(); 
             cout << "----------------------------------------------------------------------\n";
             cout << "Task marked as complete successfully.\n";
         }
     }
 
+    ~ToDoList() {
+        for (Task* task : tasks) {
+            delete task;
+        }
+    }
+
 private:
-    vector<Task> tasks;
+    vector<Task*> tasks;
 };
 
 int main() {
@@ -111,15 +120,6 @@ int main() {
     string input;
     cout << "----------------------------------------------------------------------\n";
     cout << "Welcome to your To-Do List Manager!\n";
-
-    Task taskArray[3] = { Task("Task 1"), Task("Task 2"), Task("Task 3") };
-
-    cout << "----------------------------------------------------------------------\n";
-    cout << "Initial tasks from the array:\n";
-    for (int i = 0; i < 3; ++i) {
-        cout << i + 1 << ". " << taskArray[i].getDescription() << "\n";
-        cout << "Status: " << (taskArray[i].isCompleted() ? "Completed" : "Incomplete") << '\n';
-    }
 
     do {
         toDoList.showMenu();
