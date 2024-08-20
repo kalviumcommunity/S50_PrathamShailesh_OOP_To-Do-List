@@ -20,31 +20,25 @@ public:
     }
 
     void markAsComplete() {
-        this->completed = true; 
-    }
-
-    static int getTaskCount() {
-        return taskCount;
-    }
-
-    static void decrementTaskCount() {
-        if (taskCount > 0) {
-            --taskCount;
+        if (!this->completed) {
+            this->completed = true;
+            completedTaskCount++;
         }
     }
+
+    static int taskCount;
+    static int completedTaskCount;
 
 private:
     string description;
     bool completed;
-    static int taskCount;
 };
 
 int Task::taskCount = 0;
-
+int Task::completedTaskCount = 0;
 
 class ToDoList {
 public:
-
     void showMenu() const {
         cout << "----------------------------------------------------------------------\n";
         cout << "Please choose an option:\n";
@@ -63,7 +57,7 @@ public:
         Task* newTask = new Task(taskDescription); 
         this->tasks.push_back(newTask);
         cout << "----------------------------------------------------------------------\n";
-        cout << "Task added successfully. Total tasks: " << Task::getTaskCount() << "\n";
+        cout << "Task added successfully. Total tasks: " << Task::taskCount << "\n";
     }
 
     void deleteTask() {
@@ -80,11 +74,14 @@ public:
         if (taskNumber < 1 || taskNumber > this->tasks.size()) { 
             cout << "Invalid task number.\n";
         } else {
+            if (this->tasks[taskNumber - 1]->isCompleted()) {
+                Task::completedTaskCount--;
+            }
             delete this->tasks[taskNumber - 1];
             this->tasks.erase(this->tasks.begin() + taskNumber - 1); 
-            Task::decrementTaskCount();
+            Task::taskCount--;
             cout << "Task deleted successfully.\n";
-            cout << "Total tasks remaining: " << Task::getTaskCount() << "\n";
+            cout << "Total tasks remaining: " << Task::taskCount << "\n";
         }
     }
 
@@ -99,6 +96,8 @@ public:
             cout << i + 1 << ". " << this->tasks[i]->getDescription() << "\n"; 
             cout << "Status: " << (this->tasks[i]->isCompleted() ? "Completed" : "Incomplete") << '\n'; 
         }
+        cout << "----------------------------------------------------------------------\n";
+        cout << "Total completed tasks: " << Task::completedTaskCount << "\n"; 
     }
 
     void markTaskAsComplete() {
@@ -119,6 +118,7 @@ public:
             this->tasks[taskNumber - 1]->markAsComplete(); 
             cout << "----------------------------------------------------------------------\n";
             cout << "Task marked as complete successfully.\n";
+            cout << "Total completed tasks: " << Task::completedTaskCount << "\n"; 
         }
     }
 
