@@ -7,39 +7,47 @@ using namespace std;
 
 class Task {
 public:
+    // Constructor
     Task(const string& description = "") : description(description), completed(false) {
         taskCount++;
     }
 
+    // Accessor (getter) method for task description
     string getDescription() const {
         return this->description; 
     }
 
+    // Accessor (getter) method for task completion status
     bool isCompleted() const {
         return this->completed; 
     }
 
+    // Mutator (setter) method to mark task as complete
     void markAsComplete() {
-        if (!this->completed) {
+        if (!this->completed) { // Ensuring task is not already completed
             this->completed = true;
             completedTaskCount++;
         }
     }
 
+    // Static accessor to get total task count
     static int getTaskCount() {
         return taskCount;
     }
 
+    // Static accessor to get completed task count
     static int getCompletedTaskCount() {
         return completedTaskCount;
     }
 
+    // Static mutator to decrement task count
     static void decrementTaskCount() {
         if (taskCount > 0) {
             --taskCount;
         }
     }
 
+    // Static mutator to decrement completed task count
     static void decrementCompletedTaskCount() {
         if (completedTaskCount > 0) {
             --completedTaskCount;
@@ -47,8 +55,8 @@ public:
     }
 
 private:
-    string description;
-    bool completed;
+    string description;  
+    bool completed; 
     static int taskCount;
     static int completedTaskCount;  
 };
@@ -58,7 +66,7 @@ int Task::completedTaskCount = 0;
 
 class ToDoList {
 public:
-
+    // Method to show the main menu
     void showMenu() const {
         cout << "----------------------------------------------------------------------\n";
         cout << "Please choose an option:\n";
@@ -69,17 +77,19 @@ public:
         cout << "5. Exit\n";
     }
 
+    // Mutator method to add a task
     void addTask() {
         cout << "Enter the task: ";
         string taskDescription;
         cin.ignore();
         getline(cin, taskDescription);
-        Task* newTask = new Task(taskDescription); 
+        Task* newTask = new Task(taskDescription); // Using Task constructor (mutator) to set description
         this->tasks.push_back(newTask);
         cout << "----------------------------------------------------------------------\n";
-        cout << "Task added successfully. Total tasks: " << Task::getTaskCount() << "\n";
+        cout << "Task added successfully. Total tasks: " << Task::getTaskCount() << "\n"; // Accessing total task count using accessor
     }
 
+    // Mutator method to delete a task
     void deleteTask() {
         cout << "----------------------------------------------------------------------\n";
         if (this->tasks.empty()) { 
@@ -94,17 +104,18 @@ public:
         if (taskNumber < 1 || taskNumber > this->tasks.size()) { 
             cout << "Invalid task number.\n";
         } else {
-            if (this->tasks[taskNumber - 1]->isCompleted()) {
-                Task::decrementCompletedTaskCount();
+            if (this->tasks[taskNumber - 1]->isCompleted()) {  // Using accessor to check if task is completed
+                Task::decrementCompletedTaskCount(); // Mutator to decrement completed task count
             }
-            delete this->tasks[taskNumber - 1];
+            delete this->tasks[taskNumber - 1]; // Deleting task
             this->tasks.erase(this->tasks.begin() + taskNumber - 1); 
-            Task::decrementTaskCount();
+            Task::decrementTaskCount();  // Mutator to decrement total task count
             cout << "Task deleted successfully.\n";
-            cout << "Total tasks remaining: " << Task::getTaskCount() << "\n";
+            cout << "Total tasks remaining: " << Task::getTaskCount() << "\n"; // Accessor for task count
         }
     }
 
+    // Accessor method to view all tasks
     void viewTasks() const {
         cout << "----------------------------------------------------------------------\n";
         if (this->tasks.empty()) { 
@@ -113,13 +124,14 @@ public:
         }
         cout << "Tasks:\n";
         for (size_t i = 0; i < this->tasks.size(); ++i) { 
-            cout << i + 1 << ". " << this->tasks[i]->getDescription() << "\n"; 
-            cout << "Status: " << (this->tasks[i]->isCompleted() ? "Completed" : "Incomplete") << '\n'; 
+            cout << i + 1 << ". " << this->tasks[i]->getDescription() << "\n";  // Accessor to get task description
+            cout << "Status: " << (this->tasks[i]->isCompleted() ? "Completed" : "Incomplete") << '\n';  // Accessor for task status
         }
         cout << "----------------------------------------------------------------------\n";
-        cout << "Total completed tasks: " << Task::getCompletedTaskCount() << "\n";  
+        cout << "Total completed tasks: " << Task::getCompletedTaskCount() << "\n";  // Accessor for completed task count
     }
 
+    // Mutator method to mark a task as complete
     void markTaskAsComplete() {
         cout << "----------------------------------------------------------------------\n";
         if (this->tasks.empty()) { 
@@ -135,10 +147,10 @@ public:
         if (taskNumber < 1 || taskNumber > this->tasks.size()) { 
             cout << "Invalid task number.\n";
         } else {
-            this->tasks[taskNumber - 1]->markAsComplete(); 
+            this->tasks[taskNumber - 1]->markAsComplete();  // Mutator to mark the task as complete
             cout << "----------------------------------------------------------------------\n";
             cout << "Task marked as complete successfully.\n";
-            cout << "Total completed tasks: " << Task::getCompletedTaskCount() << "\n"; 
+            cout << "Total completed tasks: " << Task::getCompletedTaskCount() << "\n";  // Accessor for completed task count
         }
     }
 
@@ -149,7 +161,7 @@ public:
     }
 
 private:
-    vector<Task*> tasks;
+    vector<Task*> tasks;  
 };
 
 int main() {
