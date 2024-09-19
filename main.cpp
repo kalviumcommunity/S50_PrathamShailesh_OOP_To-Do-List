@@ -24,7 +24,7 @@ public:
 
     // Mutator (setter) method to mark task as complete
     void markAsComplete() {
-        if (!this->completed) { // Ensuring task is not already completed
+        if (!this->completed) { 
             this->completed = true;
             completedTaskCount++;
         }
@@ -55,12 +55,16 @@ public:
     }
 
 private:
-    string description;  
-    bool completed; 
-    static int taskCount;
+    // Private member variables to protect internal data
+    string description;  // The task description is hidden from direct access
+    bool completed;      // The completion status is private
+
+    // Static member variables to track task counts, also private
+    static int taskCount;  
     static int completedTaskCount;  
 };
 
+// Initialize static members outside the class
 int Task::taskCount = 0;
 int Task::completedTaskCount = 0;
 
@@ -104,7 +108,8 @@ public:
         if (taskNumber < 1 || taskNumber > this->tasks.size()) { 
             cout << "Invalid task number.\n";
         } else {
-            if (this->tasks[taskNumber - 1]->isCompleted()) {  // Using accessor to check if task is completed
+            // Check if the task is completed using the accessor
+            if (this->tasks[taskNumber - 1]->isCompleted()) {  // Accessor to check if task is completed
                 Task::decrementCompletedTaskCount(); // Mutator to decrement completed task count
             }
             delete this->tasks[taskNumber - 1]; // Deleting task
@@ -161,6 +166,7 @@ public:
     }
 
 private:
+    // Private member variable to store the tasks (hidden from outside access)
     vector<Task*> tasks;  
 };
 
