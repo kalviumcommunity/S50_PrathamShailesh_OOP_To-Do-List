@@ -7,9 +7,28 @@ using namespace std;
 
 class Task {
 public:
-    // Constructor
+    // Parameterized constructor (also acts as a default constructor)
     Task(const string& description = "") : description(description), completed(false) {
         taskCount++;
+    }
+
+    // Copy constructor
+    Task(const Task& other) {
+        this->description = other.description;
+        this->completed = other.completed;
+        taskCount++;
+        if (this->completed) {
+            completedTaskCount++;
+        }
+    }
+
+    // Destructor
+    ~Task() {
+        if (completed) {
+            completedTaskCount--;
+        }
+        taskCount--;
+        cout << "Task '" << description << "' is being deleted.\n";
     }
 
     // Accessor (getter) method for task description
