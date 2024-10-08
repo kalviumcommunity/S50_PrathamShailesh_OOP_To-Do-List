@@ -5,16 +5,30 @@
 
 using namespace std;
 
-class Task {
+// Base class (parent class)
+class BasicTask {
 public:
-    // Parameterized constructor (also acts as a default constructor)
-    Task(const string& description = "") : description(description), completed(false) {
+    BasicTask(const string& description = "") : description(description) {}
+    
+    // Getter for description
+    string getDescription() const {
+        return description;
+    }
+
+protected:
+    string description; 
+};
+
+// Derived class (child of BasicTask) - Single Inheritance
+class Task : public BasicTask {
+public:
+    // Task constructor (inheriting from BasicTask)
+    Task(const string& description = "") : BasicTask(description), completed(false) {
         taskCount++;
     }
 
     // Copy constructor
-    Task(const Task& other) {
-        this->description = other.description;
+    Task(const Task& other) : BasicTask(other.description) {
         this->completed = other.completed;
         taskCount++;
         if (this->completed) {
@@ -31,91 +45,98 @@ public:
         cout << "Task '" << description << "' is being deleted.\n";
     }
 
-    // Accessor (getter) method for task description
-    string getDescription() const {
-        return this->description; 
-    }
-
-    // Accessor (getter) method for task completion status
-    bool isCompleted() const {
-        return this->completed; 
-    }
-
-    // Mutator (setter) method to mark task as complete
+    // Mark the task as complete
     void markAsComplete() {
-        if (!this->completed) { 
+        if (!this->completed) {
             this->completed = true;
             completedTaskCount++;
         }
     }
 
-    // Static accessor to get total task count
+    // Check if task is completed
+    bool isCompleted() const {
+        return completed;
+    }
+
+    // Static methods for task counts
     static int getTaskCount() {
         return taskCount;
     }
 
-    // Static accessor to get completed task count
     static int getCompletedTaskCount() {
         return completedTaskCount;
     }
 
-    // Static mutator to decrement task count
-    static void decrementTaskCount() {
-        if (taskCount > 0) {
-            --taskCount;
-        }
-    }
-
-    // Static mutator to decrement completed task count
-    static void decrementCompletedTaskCount() {
-        if (completedTaskCount > 0) {
-            --completedTaskCount;
-        }
-    }
+protected:
+    bool completed;
 
 private:
-    // Private member variables to protect internal data
-    string description;  // The task description is hidden from direct access
-    bool completed;      // The completion status is private
-
-    // Static member variables to track task counts, also private
-    static int taskCount;  
-    static int completedTaskCount;  
+    static int taskCount;
+    static int completedTaskCount;
 };
 
-// Initialize static members outside the class
+// Initialize static variables
 int Task::taskCount = 0;
 int Task::completedTaskCount = 0;
 
+// Derived class (child of Task) - Multi-level inheritance
+class PriorityTask : public Task {
+public:
+    PriorityTask(const string& description = "", int priority = 1) : Task(description), priority(priority) {}
+
+    // Set task priority
+    void setPriority(int priorityLevel) {
+        priority = priorityLevel;
+    }
+
+    // Get task priority
+    int getPriority() const {
+        return priority;
+    }
+
+private:
+    int priority;
+};
+
+// ToDoList class managing tasks
 class ToDoList {
 public:
-    // Method to show the main menu
     void showMenu() const {
         cout << "----------------------------------------------------------------------\n";
         cout << "Please choose an option:\n";
         cout << "1. Add a task\n";
-        cout << "2. Delete a task\n";
-        cout << "3. View all tasks\n";
-        cout << "4. Mark a task as complete\n";
-        cout << "5. Exit\n";
+        cout << "2. Add a priority task\n";
+        cout << "3. Delete a task\n";
+        cout << "4. View all tasks\n";
+        cout << "5. Mark a task as complete\n";
+        cout << "6. Exit\n";
     }
 
-    // Mutator method to add a task
     void addTask() {
         cout << "Enter the task: ";
         string taskDescription;
         cin.ignore();
         getline(cin, taskDescription);
-        Task* newTask = new Task(taskDescription); // Using Task constructor (mutator) to set description
-        this->tasks.push_back(newTask);
-        cout << "----------------------------------------------------------------------\n";
-        cout << "Task added successfully. Total tasks: " << Task::getTaskCount() << "\n"; // Accessing total task count using accessor
+        Task* newTask = new Task(taskDescription);
+        tasks.push_back(newTask);
+        cout << "Task added successfully. Total tasks: " << Task::getTaskCount() << "\n";
     }
 
-    // Mutator method to delete a task
+    void addPriorityTask() {
+        cout << "Enter the task: ";
+        string taskDescription;
+        cin.ignore();
+        getline(cin, taskDescription);
+        cout << "Enter task priority (1 = High, 2 = Medium, 3 = Low): ";
+        int priorityLevel;
+        cin >> priorityLevel;
+        PriorityTask* newPriorityTask = new PriorityTask(taskDescription, priorityLevel);
+        tasks.push_back(newPriorityTask);
+        cout << "Priority task added successfully with priority " << priorityLevel << ". Total tasks: " << Task::getTaskCount() << "\n";
+    }
+
     void deleteTask() {
-        cout << "----------------------------------------------------------------------\n";
-        if (this->tasks.empty()) { 
+        if (tasks.empty()) {
             cout << "No tasks available to delete.\n";
             return;
         }
@@ -124,57 +145,48 @@ public:
         int taskNumber;
         cin >> taskNumber;
 
-        if (taskNumber < 1 || taskNumber > this->tasks.size()) { 
+        if (taskNumber < 1 || taskNumber > tasks.size()) {
             cout << "Invalid task number.\n";
         } else {
-            // Check if the task is completed using the accessor
-            if (this->tasks[taskNumber - 1]->isCompleted()) {  // Accessor to check if task is completed
-                Task::decrementCompletedTaskCount(); // Mutator to decrement completed task count
-            }
-            delete this->tasks[taskNumber - 1]; // Deleting task
-            this->tasks.erase(this->tasks.begin() + taskNumber - 1); 
-            Task::decrementTaskCount();  // Mutator to decrement total task count
-            cout << "Task deleted successfully.\n";
-            cout << "Total tasks remaining: " << Task::getTaskCount() << "\n"; // Accessor for task count
+            delete tasks[taskNumber - 1];
+            tasks.erase(tasks.begin() + taskNumber - 1);
+            Task::getTaskCount();
+            cout << "Task deleted successfully. Total tasks: " << Task::getTaskCount() << "\n";
         }
     }
 
-    // Accessor method to view all tasks
     void viewTasks() const {
-        cout << "----------------------------------------------------------------------\n";
-        if (this->tasks.empty()) { 
+        if (tasks.empty()) {
             cout << "No tasks available.\n";
             return;
         }
-        cout << "Tasks:\n";
-        for (size_t i = 0; i < this->tasks.size(); ++i) { 
-            cout << i + 1 << ". " << this->tasks[i]->getDescription() << "\n";  // Accessor to get task description
-            cout << "Status: " << (this->tasks[i]->isCompleted() ? "Completed" : "Incomplete") << '\n';  // Accessor for task status
+        for (size_t i = 0; i < tasks.size(); ++i) {
+            cout << i + 1 << ". " << tasks[i]->getDescription() << " - " << (tasks[i]->isCompleted() ? "Completed" : "Incomplete") << '\n';
+
+            PriorityTask* pt = dynamic_cast<PriorityTask*>(tasks[i]);
+            if (pt) {
+                cout << "   Priority: " << pt->getPriority() << "\n";
+            }
         }
-        cout << "----------------------------------------------------------------------\n";
-        cout << "Total completed tasks: " << Task::getCompletedTaskCount() << "\n";  // Accessor for completed task count
+        cout << "Total completed tasks: " << Task::getCompletedTaskCount() << "\n";
     }
 
-    // Mutator method to mark a task as complete
     void markTaskAsComplete() {
-        cout << "----------------------------------------------------------------------\n";
-        if (this->tasks.empty()) { 
+        if (tasks.empty()) {
             cout << "No tasks available to mark as complete.\n";
             return;
         }
 
-        this->viewTasks(); 
+        viewTasks();
         cout << "Enter the task number to mark as complete: ";
         int taskNumber;
         cin >> taskNumber;
 
-        if (taskNumber < 1 || taskNumber > this->tasks.size()) { 
+        if (taskNumber < 1 || taskNumber > tasks.size()) {
             cout << "Invalid task number.\n";
         } else {
-            this->tasks[taskNumber - 1]->markAsComplete();  // Mutator to mark the task as complete
-            cout << "----------------------------------------------------------------------\n";
+            tasks[taskNumber - 1]->markAsComplete();
             cout << "Task marked as complete successfully.\n";
-            cout << "Total completed tasks: " << Task::getCompletedTaskCount() << "\n";  // Accessor for completed task count
         }
     }
 
@@ -185,14 +197,15 @@ public:
     }
 
 private:
-    // Private member variable to store the tasks (hidden from outside access)
-    vector<Task*> tasks;  
+    vector<Task*> tasks;
 };
 
+// Main function to run the program
 int main() {
     ToDoList toDoList;
     int choice;
     string input;
+
     cout << "----------------------------------------------------------------------\n";
     cout << "Welcome to your To-Do List Manager!\n";
 
@@ -203,7 +216,7 @@ int main() {
 
         stringstream ss(input);
         if (!(ss >> choice) || !ss.eof()) {
-            cout << "Invalid choice. Please enter a number between 1 and 5.\n";
+            cout << "Invalid choice. Please enter a number between 1 and 6.\n";
             continue;
         }
 
@@ -212,21 +225,24 @@ int main() {
                 toDoList.addTask();
                 break;
             case 2:
-                toDoList.deleteTask();
+                toDoList.addPriorityTask();
                 break;
             case 3:
-                toDoList.viewTasks();
+                toDoList.deleteTask();
                 break;
             case 4:
-                toDoList.markTaskAsComplete();
+                toDoList.viewTasks();
                 break;
             case 5:
+                toDoList.markTaskAsComplete();
+                break;
+            case 6:
                 cout << "Exiting the program.\n";
                 break;
             default:
                 cout << "Invalid choice. Please try again.\n";
         }
-    } while (choice != 5);
+    } while (choice != 6);
 
     return 0;
 }
