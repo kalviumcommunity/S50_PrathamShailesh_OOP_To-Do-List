@@ -5,7 +5,7 @@
 
 using namespace std;
 
-// Task class definition (Base Class)
+// Task class definition (Abstract Base Class)
 class Task {
 public:
     Task(const string& description = "") : description(description), completed(false) {
@@ -52,6 +52,9 @@ public:
         return completedTaskCount;
     }
 
+    // Pure virtual function (forcing derived classes to implement it)
+    virtual string getDetails() const = 0;
+
 protected:
     string description;
     bool completed;
@@ -74,6 +77,11 @@ public:
         return priority;
     }
 
+    // Implement the pure virtual function from Task class
+    string getDetails() const override {
+        return "Priority: " + to_string(priority);
+    }
+
 private:
     int priority;
 };
@@ -83,7 +91,7 @@ class ToDoList {
 public:
     // Overloaded method to add a simple task
     void addTask(const string& description) {
-        Task* newTask = new Task(description);
+        Task* newTask = new PriorityTask(description);  // Using PriorityTask to demonstrate polymorphism
         this->tasks.push_back(newTask);
         cout << "----------------------------------------------------------------------\n";
         cout << "Task added successfully. Total tasks: " << Task::getTaskCount() << "\n";
@@ -128,6 +136,7 @@ public:
         for (size_t i = 0; i < this->tasks.size(); ++i) {
             cout << i + 1 << ". " << this->tasks[i]->getDescription() << "\n";
             cout << "   Status: " << (this->tasks[i]->isCompleted() ? "Completed" : "Incomplete") << "\n";
+            cout << "   Details: " << this->tasks[i]->getDetails() << "\n";  // Using polymorphism
 
             // If task is a PriorityTask, show its priority
             PriorityTask* pt = dynamic_cast<PriorityTask*>(tasks[i]);
